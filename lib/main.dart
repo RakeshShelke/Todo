@@ -1,11 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:untitled/pages/auth/loginPage.dart';
-import 'package:untitled/shared/constant.dart';
-import 'package:untitled/widgets/listPage.dart';
-
-import 'helper/helperFunction.dart';
+import 'package:untitled/Auth/loginPage.dart';
+import 'package:untitled/Constant/constant.dart';
+import 'Pages/homePage.dart';
+import 'Service/helperFunction.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

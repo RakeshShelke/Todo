@@ -1,28 +1,31 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:untitled/Auth/registerPage.dart';
 
-import '../../helper/helperFunction.dart';
-import '../../service/authService.dart';
-import '../../widgets/listPage.dart';
-import '../../widgets/widget.dart';
+import '../Pages/homePage.dart';
+import '../Service/authService.dart';
+import '../Service/helperFunction.dart';
+import '../Widget/widget.dart';
 
-import 'loginPage.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _LoginPageState extends State<LoginPage> {
   bool showPassword = true;
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
-  String fullName = "";
   bool _isLoading = false;
   AuthService authService = AuthService();
+  FirebaseAuth auth = FirebaseAuth.instance;
+  final TextEditingController Email = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,35 +50,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         style: TextStyle(
                             fontSize: 40, fontWeight: FontWeight.bold),
                       ),
-                      const Text(
-                        "Create your account now",
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.w400),
-                      ),
-                      Image.asset("assets/register.png"),
-                      TextFormField(
-                        decoration: textInputDecoration.copyWith(
-                            labelText: "Full Name",
-                            prefixIcon: Icon(
-                              Icons.person,
-                              color: Theme.of(context).primaryColor,
-                            )),
-                        onChanged: (value) {
-                          setState(() {
-                            fullName = value;
-                          });
-                        },
-                        validator: (value) {
-                          if (value!.isNotEmpty) {
-                            return null;
-                          } else {
-                            return "Please enter Name";
-                          }
-                        },
-                      ),
                       const SizedBox(
                         height: 10,
                       ),
+                      Image.asset("assets/login.png"),
                       TextFormField(
                         decoration: textInputDecoration.copyWith(
                             labelText: "Email",
@@ -97,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 15,
                       ),
                       TextFormField(
                         obscureText: showPassword,
@@ -136,21 +114,21 @@ class _RegisterPageState extends State<RegisterPage> {
                         },
                       ),
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor,
+                                backgroundColor: Theme.of(context).primaryColor,
                                 elevation: 5,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
                             onPressed: () {
-                              register();
+                              login();
                             },
                             child: const Text(
-                              'Register',
+                              'Sign In',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             )),
@@ -159,17 +137,17 @@ class _RegisterPageState extends State<RegisterPage> {
                         height: 10,
                       ),
                       Text.rich(TextSpan(
-                          text: "Already have an account? ",
+                          text: "Don't have an account? ",
                           style: const TextStyle(
                               color: Colors.black, fontSize: 14),
                           children: <TextSpan>[
                             TextSpan(
-                                text: "Login now",
+                                text: "Register Here",
                                 style:
                                     const TextStyle(color: Colors.blueAccent),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    nextScreen(context, const LoginPage());
+                                    nextScreen(context, const RegisterPage());
                                   })
                           ]))
                     ],
@@ -180,18 +158,18 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  register() async {
+  login() async {
     if (formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
       await authService
-          .registerUserWithEmailAndPassword(fullName, email, password)
+          .loginUserWithEmailAndPassword(email, password)
           .then((value) async {
         if (value == true) {
           await HelperFunction.saveUserLogged(true);
           await HelperFunction.saveUserEmail(email);
-          await HelperFunction.saveUserName(fullName);
+
           nextScreenReplace(context, Home());
         } else {
           showSnackBar(context, Colors.red, value);

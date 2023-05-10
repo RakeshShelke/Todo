@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../service/authService.dart';
-import '../widgets/listPage.dart';
-import '../widgets/widget.dart';
-import 'auth/loginPage.dart';
+
+import '../Service/authService.dart';
+import '../Widget/widget.dart';
+
+
+import '../Auth/loginPage.dart';
+import 'homePage.dart';
 
 class ProfilePage extends StatefulWidget {
   final String fullName;

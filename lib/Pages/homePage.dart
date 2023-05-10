@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/widgets/toDoItem.dart';
-import 'package:untitled/widgets/widget.dart';
+import 'package:untitled/Pages/profilePage.dart';
 
-import '../helper/helperFunction.dart';
-import '../pages/auth/loginPage.dart';
-import '../pages/profilePage.dart';
-import '../pages/toDo.dart';
-import '../service/authService.dart';
-import '../shared/constant.dart';
+import '../Auth/loginPage.dart';
+import '../Constant/constant.dart';
+import '../Service/authService.dart';
+import '../Service/helperFunction.dart';
+import '../ToDo/toDo.dart';
+
+import '../ToDo/toDoItem.dart';
+import '../Widget/widget.dart';
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/ToDo/toDo.dart';
 
-import '../pages/toDo.dart';
-import '../shared/constant.dart';
+import '../Constant/constant.dart';
 
 class ToDoItem extends StatelessWidget {
   final ToDo todo;

@@ -1,29 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:untitled/pages/auth/registerPage.dart';
-import '../../helper/helperFunction.dart';
-import '../../service/authService.dart';
-import '../../widgets/listPage.dart';
-import '../../widgets/widget.dart';
+import '../Pages/homePage.dart';
+import '../Service/authService.dart';
+import '../Service/helperFunction.dart';
+import '../Widget/widget.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+
+import 'loginPage.dart';
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   bool showPassword = true;
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
+  String fullName = "";
   bool _isLoading = false;
   AuthService authService = AuthService();
-  FirebaseAuth auth = FirebaseAuth.instance;
-  final TextEditingController Email = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +47,35 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                             fontSize: 40, fontWeight: FontWeight.bold),
                       ),
+                      const Text(
+                        "Create your account now",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w400),
+                      ),
+                      Image.asset("assets/register.png"),
+                      TextFormField(
+                        decoration: textInputDecoration.copyWith(
+                            labelText: "Full Name",
+                            prefixIcon: Icon(
+                              Icons.person,
+                              color: Theme.of(context).primaryColor,
+                            )),
+                        onChanged: (value) {
+                          setState(() {
+                            fullName = value;
+                          });
+                        },
+                        validator: (value) {
+                          if (value!.isNotEmpty) {
+                            return null;
+                          } else {
+                            return "Please enter Name";
+                          }
+                        },
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
-                      Image.asset("assets/login.png"),
                       TextFormField(
                         decoration: textInputDecoration.copyWith(
                             labelText: "Email",
@@ -73,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                       const SizedBox(
-                        height: 15,
+                        height: 10,
                       ),
                       TextFormField(
                         obscureText: showPassword,
@@ -112,21 +136,21 @@ class _LoginPageState extends State<LoginPage> {
                         },
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).primaryColor,
+                                primary: Theme.of(context).primaryColor,
                                 elevation: 5,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30))),
                             onPressed: () {
-                              login();
+                              register();
                             },
                             child: const Text(
-                              'Sign In',
+                              'Register',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 16),
                             )),
@@ -135,17 +159,17 @@ class _LoginPageState extends State<LoginPage> {
                         height: 10,
                       ),
                       Text.rich(TextSpan(
-                          text: "Don't have an account? ",
+                          text: "Already have an account? ",
                           style: const TextStyle(
                               color: Colors.black, fontSize: 14),
                           children: <TextSpan>[
                             TextSpan(
-                                text: "Register Here",
+                                text: "Login now",
                                 style:
                                     const TextStyle(color: Colors.blueAccent),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    nextScreen(context, const RegisterPage());
+                                    nextScreen(context, const LoginPage());
                                   })
                           ]))
                     ],
@@ -156,18 +180,18 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  login() async {
+  register() async {
     if (formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
       await authService
-          .loginUserWithEmailAndPassword(email, password)
+          .registerUserWithEmailAndPassword(fullName, email, password)
           .then((value) async {
         if (value == true) {
           await HelperFunction.saveUserLogged(true);
           await HelperFunction.saveUserEmail(email);
-
+          await HelperFunction.saveUserName(fullName);
           nextScreenReplace(context, Home());
         } else {
           showSnackBar(context, Colors.red, value);
